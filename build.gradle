@@ -28,6 +28,7 @@ subprojects {
 tasks.named('build') {
     // The only release artifact is the cross-version/cross-loader jar.
     dependsOn ':release:singleUniversalJar'
+    dependsOn ':render-test:test'
 }
 
 // Convenience launchers for the IntelliJ Gradle tool window.

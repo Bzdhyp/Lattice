@@ -158,6 +158,7 @@ Lattice/
 │       ├── 1.21.11/
 │       └── 26.3/
 ├── release/                     # 合并四个 loader JAR -> 唯一单 JAR
+├── render-test/                 # JUnit Skija 像素测试（不需要 Minecraft）
 └── scripts/verify-artifacts.py  # 校验 build/dist 只有一个 JAR
 ```
 
@@ -255,6 +256,33 @@ API 分层：
 - 目前只打包 **Windows x64** 原生库；其他系统会捕获加载失败并禁用 Skija，不会让游戏崩溃。
 - 当前是 2D 渲染层，已支持 blur / drop shadow；还没有 3D 世界阴影。
 - Skija 使用 Apache-2.0，Skia 使用 BSD-3-Clause；发布前需要补充第三方许可文本。
+
+## 测试
+
+Skija 渲染 API 有独立的 JUnit 像素测试，不依赖 Minecraft：
+
+```bash
+./gradlew :render-test:test
+```
+
+覆盖：
+
+- 直角矩形填充
+- 圆角矩形与透明圆角
+- 圆角描边
+- drop shadow 外部像素
+- blur 形状
+- 水平渐变
+- translate/scale 状态栈
+- backdrop blur 执行与输出
+
+报告：
+
+```text
+render-test/build/reports/tests/test/index.html
+```
+
+`gradlew build` 也会自动执行 `:render-test:test`。
 
 ## 已验证矩阵
 

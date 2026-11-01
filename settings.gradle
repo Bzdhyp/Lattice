@@ -27,6 +27,7 @@ include ':versions:fabric:v26_3'
 include ':versions:neoforge:v1_21_11'
 include ':versions:neoforge:v26_3'
 include ':release'
+include ':render-test'
 
 project(':versions').projectDir = file('versions')
 project(':versions:fabric').projectDir = file('versions/fabric')

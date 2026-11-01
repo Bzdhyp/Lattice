@@ -1,0 +1,42 @@
+plugins {
+    id 'java'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir rootProject.file('common/src/main/java')
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'io.github.humbleui:skija-shared:0.143.17'
+    implementation 'io.github.humbleui:types:0.2.0'
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+    runtimeOnly 'org.slf4j:slf4j-simple:2.0.9'
+    runtimeOnly 'io.github.humbleui:skija-windows-x64:0.143.17'
+    runtimeOnly 'io.github.humbleui:skija-linux-x64:0.143.17'
+
+    testImplementation platform('org.junit:junit-bom:5.10.2')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+    systemProperty 'java.awt.headless', 'true'
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+    }
+}
