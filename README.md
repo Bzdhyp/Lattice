@@ -137,28 +137,33 @@ fabric.mod.json / neoforge.mods.toml
 
 ```text
 Lattice/
+├── buildSrc/                    # Gradle 构建逻辑：MergeUniversalJarTask
 ├── common/
 │   ├── src/main/java/           # 无 MC / 无 loader 依赖的公共代码
 │   └── src/main/resources/
 │       └── assets/lattice/      # 共享大资源：font / shaders / textures / icon.png
 ├── bootstrap/
-│   ├── fabric/                  # 单 Fabric 入口，按 MC 版本反射调度
-│   └── neoforge/                # 单 NeoForge 入口，按 MC 版本反射调度
+│   ├── fabric/                  # 运行时 Fabric 入口，不是 buildSrc
+│   └── neoforge/                # 运行时 NeoForge 入口，不是 buildSrc
 ├── versions/
-│   ├── 1.21.11/
-│   │   ├── common/              # 1.21.11 代码 + 版本专属 lang
-│   │   ├── fabric/              # 只放 fabric.mod.json / Mixin 等元数据
-│   │   └── neoforge/            # 只放 neoforge.mods.toml / Mixin 等元数据
-│   └── 26.3/
-│       ├── common/
-│       ├── fabric/
-│       └── neoforge/
-├── crossversion/                # 合并成唯一 JAR，并合并版本 lang
+│   ├── common/                  # 版本专属代码 + lang
+│   │   ├── 1.21.11/src/main/java/
+│   │   ├── 1.21.11/src/main/resources/
+│   │   ├── 26.3/src/main/java/
+│   │   └── 26.3/src/main/resources/
+│   ├── fabric/                  # 只放 Fabric 元数据 / Mixin
+│   │   ├── 1.21.11/
+│   │   └── 26.3/
+│   └── neoforge/                # 只放 NeoForge 元数据 / Mixin
+│       ├── 1.21.11/
+│       └── 26.3/
+├── release/                     # 合并四个 loader JAR -> 唯一单 JAR
 ├── .run/                        # IDEA 共享客户端启动配置
 └── scripts/verify-artifacts.py  # 校验 build/dist 只有一个 JAR
 ```
 
-`versions/1.21.11` 和 `versions/26.3` 是两个隔离的版本子工程，各自有独立 toolchain、依赖图和源码目录；根 wrapper 只负责统一编排单 JAR 构建。
+`buildSrc` 只放 Gradle 构建逻辑，不参与游戏运行时；`bootstrap` 仍是运行时入口，会被打进 mod JAR。  
+四个 loader 子工程各自有独立 toolchain、依赖图和源码目录；根 wrapper 统一编排，`release` 负责最终合并。
 
 ### 资源放哪里
 
@@ -166,9 +171,9 @@ Lattice/
 |---|---|
 | 字体、shader、贴图、音效、图标等共享资源 | `common/src/main/resources/assets/lattice/` |
 | TTF 字体（原版 provider） | `common/src/main/resources/assets/lattice/font/your_font.ttf` + 同名 `.json` |
-| 版本专属 `lang` | `versions/<版本>/common/src/main/resources/assets/lattice/lang/` |
-| 版本专属贴图 / data | `versions/<版本>/common/src/main/resources/assets/lattice/` 或 `.../data/lattice/` |
-| 加载器元数据、Mixin 配置 | `versions/<版本>/fabric/src/main/resources/`、`.../neoforge/src/main/resources/` |
+| 版本专属 `lang` | `versions/common/<版本>/src/main/resources/assets/lattice/lang/` |
+| 版本专属贴图 / data | `versions/common/<版本>/src/main/resources/assets/lattice/` 或 `.../data/lattice/` |
+| 加载器元数据、Mixin 配置 | `versions/fabric/<版本>/src/main/resources/`、`versions/neoforge/<版本>/src/main/resources/` |
 
 原版 TTF provider 示例：
 

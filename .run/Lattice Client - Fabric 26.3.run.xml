@@ -10,7 +10,7 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value=":v26_3:fabric:runClient" />
+          <option value=":versions:fabric:v26_3:runClient" />
         </list>
       </option>
       <option name="vmOptions" />

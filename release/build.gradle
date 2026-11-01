@@ -1,0 +1,59 @@
+import dev.lattice.gradle.MergeUniversalJarTask
+
+plugins {
+    id 'base'
+}
+
+evaluationDependsOn(':versions:fabric:v1_21_11')
+evaluationDependsOn(':versions:fabric:v26_3')
+evaluationDependsOn(':versions:neoforge:v1_21_11')
+evaluationDependsOn(':versions:neoforge:v26_3')
+
+def fabric12111 = project(':versions:fabric:v1_21_11').tasks.named('remapJar')
+def fabric263 = project(':versions:fabric:v26_3').tasks.named('jar')
+def neo12111 = project(':versions:neoforge:v1_21_11').tasks.named('jar')
+def neo263 = project(':versions:neoforge:v26_3').tasks.named('jar')
+
+def expandProps = [
+        version         : project.version,
+        modId           : rootProject.property('mod_id'),
+        modName         : rootProject.property('mod_name'),
+        description     : rootProject.property('mod_description'),
+        author          : rootProject.property('mod_author'),
+        license         : rootProject.property('mod_license'),
+        fabricMcRange   : '>=1.21.11 <26.4',
+        neoforgeMcRange : '[1.21.11,26.4)',
+        neoforgeRange   : '[21.11,27)',
+        fabricLoader    : rootProject.property('fabric_loader_1_21_11')
+]
+
+def generatedMetadata = tasks.register('generateReleaseMetadata', Copy) {
+    from 'src/main/resources'
+    into layout.buildDirectory.dir('generated/metadata')
+    inputs.properties(expandProps)
+    expand(expandProps)
+}
+
+tasks.register('singleUniversalJar', MergeUniversalJarTask) {
+    group = 'build'
+    description = 'Builds one universal jar for 1.21.11 + 26.3 on Fabric/NeoForge.'
+    dependsOn fabric12111, fabric263, neo12111, neo263, generatedMetadata
+
+    inputJars.from(
+            fabric12111.flatMap { it.archiveFile },
+            fabric263.flatMap { it.archiveFile },
+            neo12111.flatMap { it.archiveFile },
+            neo263.flatMap { it.archiveFile }
+    )
+    metadataDir.set(layout.buildDirectory.dir('generated/metadata'))
+    archiveFile.set(rootProject.layout.buildDirectory.file(
+            "dist/lattice-1.21.11-26.3-${project.version}-universal.jar"))
+    manifestAttributes.set([
+            'Specification-Title'   : rootProject.property('mod_name'),
+            'Specification-Vendor'  : rootProject.property('mod_author'),
+            'Specification-Version' : project.version.toString(),
+            'Implementation-Title'  : 'lattice-universal',
+            'Implementation-Version': project.version.toString(),
+            'Built-On-Minecraft'    : '1.21.11,26.3'
+    ])
+}
