@@ -26,7 +26,6 @@ subprojects {
 }
 
 tasks.named('build') {
-    dependsOn ':v1_21_11:universalJar'
-    dependsOn ':v26_3:universalJar'
+    // The only release artifact is the cross-version/cross-loader jar.
     dependsOn ':crossversion:crossVersionJar'
 }

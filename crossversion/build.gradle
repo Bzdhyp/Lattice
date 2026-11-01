@@ -32,7 +32,7 @@ tasks.register('crossVersionJar', Jar) {
     description = 'Builds the experimental one-jar PoC for 1.21.11 + 26.3 on Fabric/NeoForge.'
     group = 'build'
     dependsOn jar12111, jar263, generatedResources
-    archiveFileName = "lattice-1.21.11-26.3-${project.version}-universal.jar"
+    archiveFileName = "lattice-${project.version}-universal.jar"
     destinationDirectory = rootProject.layout.buildDirectory.dir('dist')
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 

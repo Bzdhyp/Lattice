@@ -15,7 +15,7 @@ tasks.register('universalJar', Jar) {
     group = 'build'
     dependsOn fabricJarTask, neoForgeJarTask
     archiveFileName = "lattice-${mcVersion}-${project.version}-universal.jar"
-    destinationDirectory = rootProject.layout.buildDirectory.dir('dist')
+    destinationDirectory = rootProject.layout.buildDirectory.dir("intermediate/${mcVersion}")
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
     exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'

@@ -134,18 +134,18 @@ fabric.mod.json / neoforge.mods.toml
 
 - 入口类由两个版本共同编译/合并，保留 classfile 65 版本，兼容 1.21.11 Java 21 和 26.3 Java 25。
 - payload 按版本 + loader 放独立包；Fabric 1.21.11 的 payload 经过 remap，26.3 payload 不 remap。
-- 跨版本 JAR 的元数据使用联合范围；同版本 JAR 使用严格范围。
+- 唯一发布 JAR 的元数据使用联合范围；按版本生成的 JAR 仅作为合并中间件，不进入 `build/dist`。
 - 当前 payload 只写日志，不引用 Minecraft 类型；这是“最小 PoC”，不是通用业务代码方案。
 
 ## 5. 已验证与未验证
 
 **已验证**
 
-- `gradlew build` 成功。
-- 两个同版本 universal JAR 在 Fabric/NeoForge 专用服务器均被识别并初始化。
-- 跨版本单 JAR 在 1.21.11/26.3 × Fabric/NeoForge 四种组合均被识别并初始化。
+- `gradlew build` 成功，并且 `build/dist` 只生成一个 `lattice-0.1.0-universal.jar`。
+- 这一个 JAR 在 1.21.11/26.3 × Fabric/NeoForge 四种组合均被识别并初始化。
 - Fabric 与 NeoForge 元数据可共存；Fabric 入口不会在 NeoForge 上被错误调用，反之亦然。
-- 跨版本 Jar 中 26.3 payload 的 classfile 69 没有阻止 1.21.11 服务器启动。
+- JAR 中 26.3 payload 的 classfile 69 没有阻止 1.21.11 服务器启动。
+- 四次验证均通过服务器 `stop` 正常关闭，退出码 0。
 
 **未验证 / 不承诺**
 
@@ -157,10 +157,10 @@ fabric.mod.json / neoforge.mods.toml
 
 ## 6. 推荐路径
 
-1. **发布策略**：把 `lattice-1.21.11-...-universal.jar` 和 `lattice-26.3-...-universal.jar` 作为正式产物；它们已经过双加载器启动验证。
-2. **跨版本 JAR**：保留为实验性 PoC；若继续投入，按 AutoModpack 的思路改成“每目标完整构建 + 外层 trampoline + loader SPI”，而不是继续堆共享类。
+1. **发布策略**：默认构建只产出 `build/dist/lattice-0.1.0-universal.jar`，该文件已通过四种加载器/版本组合验证。
+2. **生产化**：当前单 JAR 仍是最小 PoC。加入真实内容后，优先保持“共享无 MC 类入口 + 版本/加载器隔离 payload”，并为每个版本独立测试；如果代码量或 Mixin 复杂度超过可控范围，再回退到“按版本 universal JAR”或 AutoModpack 式“每目标完整构建 + 外层 trampoline”方案。
 3. **加入真实内容时**：优先按版本目录放置版本相关注册代码；每个 loader 适配层只做入口/事件注册；公共层保持无 MC 引用。
-4. **CI**：至少构建全部目标并做元数据静态检查；有 Windows runner 时可加入专用服务器 smoke test。
+4. **CI**：构建唯一 JAR 并做元数据静态检查；有 Windows runner 时可加入专用服务器 smoke test。
 5. **Mixin**：每个 loader/版本使用独立 mixin 配置和 refmap；不要假设一个 mixin 配置能跨映射空间。
 
 ## 7. 参考链接
