@@ -59,12 +59,19 @@ gradlew.bat build
 
 ## 在 IDEA 中启动客户端
 
-重新加载 Gradle 项目后，IDEA 右上角运行下拉框会出现四个共享配置：
+重新加载 Gradle 项目后，IDEA 右上角运行下拉框会出现四个共享的 Gradle 配置：
 
 - `Lattice Client - Fabric 1.21.11`
 - `Lattice Client - Fabric 26.3`
 - `Lattice Client - NeoForge 1.21.11`
 - `Lattice Client - NeoForge 26.3`
+
+另外提供两个绿色 **Application** 配置，和 `neoforge - Client` 一样使用 Application 类型：
+
+- `fabric - Client 1.21.11`
+- `fabric - Client 26.3`
+
+Application 配置使用 Loom 的 `.gradle/loom-cache/projects/.../launch.cfg`；新克隆仓库后如果还没有该文件，先运行一次对应版本的 `runClient`（或 `ideaSyncTask`）生成。
 
 也可以从 Gradle 工具窗口运行：
 

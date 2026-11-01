@@ -41,6 +41,19 @@ dependencies {
     compileOnly 'org.slf4j:slf4j-api:2.0.9'
 }
 
+loom {
+    runs {
+        client {
+            client()
+            runDir('run')
+        }
+        server {
+            server()
+            runDir('run')
+        }
+    }
+}
+
 processResources {
     def expandProps = [
             version      : project.version,
