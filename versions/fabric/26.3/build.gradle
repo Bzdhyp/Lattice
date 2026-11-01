@@ -44,13 +44,37 @@ loom {
     runs {
         client {
             client()
+            ideConfigGenerated(true)
             runDir('run')
         }
         server {
             server()
+            ideConfigGenerated(true)
             runDir('run')
         }
     }
+}
+
+def generateFabricApplicationRun = tasks.register(
+        'generateFabricApplicationRun', dev.lattice.gradle.GenerateIdeaApplicationRunTask) {
+    group = 'ide'
+    description = 'Generates the Fabric Application run configuration for IntelliJ sync'
+    def launchCfg = rootProject.file(
+            ".gradle/loom-cache/projects/${project.path.substring(1).replace(':', '/')}/launch.cfg")
+    configName.set("fabric - Client ${mcVersion}")
+    moduleName.set("${rootProject.name}.${project.path.substring(1).replace(':', '.')}.main")
+    mainClass.set('net.fabricmc.devlaunchinjector.Main')
+    vmParameters.set("-Dfabric.dli.config=${launchCfg.absolutePath.replace('\\', '/')} " +
+            "-Dfabric.dli.env=client " +
+            "-Dfabric.dli.main=net.fabricmc.loader.impl.launch.knot.KnotClient " +
+            "--sun-misc-unsafe-memory-access=allow --enable-native-access=ALL-UNNAMED")
+    workingDirectory.set('$PROJECT_DIR$/versions/fabric/' + mcVersion + '/run')
+    outputFile.set(rootProject.layout.projectDirectory.file(
+            ".idea/runConfigurations/fabric - Client ${mcVersion}.xml"))
+}
+
+tasks.matching { it.name == 'ideaSyncTask' }.configureEach {
+    dependsOn generateFabricApplicationRun
 }
 
 processResources {

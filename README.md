@@ -59,19 +59,19 @@ gradlew.bat build
 
 ## 在 IDEA 中启动客户端
 
-重新加载 Gradle 项目后，IDEA 右上角运行下拉框会出现四个共享的 Gradle 配置：
+Gradle/IDEA 同步（点击大象刷新）时，Loom 的 `ideaSyncTask` 会自动生成：
 
-- `Lattice Client - Fabric 1.21.11`
-- `Lattice Client - Fabric 26.3`
-- `Lattice Client - NeoForge 1.21.11`
-- `Lattice Client - NeoForge 26.3`
+- `Minecraft Client (:versions:fabric:v1_21_11)`（Gradle 类型）
+- `Minecraft Client (:versions:fabric:v26_3)`（Gradle 类型）
+- `fabric - Client 1.21.11`（Application 类型）
+- `fabric - Client 26.3`（Application 类型）
 
-另外提供两个绿色 **Application** 配置，和 `neoforge - Client` 一样使用 Application 类型：
+NeoForge 侧由 ModDevGradle 生成 `neoforge - Client` / `neoforge - Server`。
 
-- `fabric - Client 1.21.11`
-- `fabric - Client 26.3`
+这些配置写入 `.idea/runConfigurations/`，属于本地 IDE 配置，已被 Git 忽略；**不需要 `.run` 文件夹**。  
+本项目在 `buildSrc` 中用 `GenerateIdeaApplicationRunTask` 挂到 `ideaSyncTask`，所以同步时会自动创建 Fabric Application 配置。
 
-Application 配置使用 Loom 的 `.gradle/loom-cache/projects/.../launch.cfg`；新克隆仓库后如果还没有该文件，先运行一次对应版本的 `runClient`（或 `ideaSyncTask`）生成。
+Application 配置使用 Loom 的 `.gradle/loom-cache/projects/.../launch.cfg`；同步任务会同时生成该文件。
 
 也可以从 Gradle 工具窗口运行：
 
@@ -137,7 +137,7 @@ fabric.mod.json / neoforge.mods.toml
 
 ```text
 Lattice/
-├── buildSrc/                    # Gradle 构建逻辑：MergeUniversalJarTask
+├── buildSrc/                    # Gradle 构建逻辑：合并 JAR + 自动生成 IDEA 运行配置
 ├── common/
 │   ├── src/main/java/           # 无 MC / 无 loader 依赖的公共代码
 │   └── src/main/resources/
@@ -158,7 +158,6 @@ Lattice/
 │       ├── 1.21.11/
 │       └── 26.3/
 ├── release/                     # 合并四个 loader JAR -> 唯一单 JAR
-├── .run/                        # IDEA 共享客户端启动配置
 └── scripts/verify-artifacts.py  # 校验 build/dist 只有一个 JAR
 ```
 
