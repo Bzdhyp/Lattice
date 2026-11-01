@@ -71,7 +71,7 @@ def generateFabricApplicationRun = tasks.register(
     vmParameters.set("-Dfabric.dli.config=${launchCfg.absolutePath.replace('\\', '/')} " +
             "-Dfabric.dli.env=client " +
             "-Dfabric.dli.main=net.fabricmc.loader.impl.launch.knot.KnotClient " +
-            "--sun-misc-unsafe-memory-access=allow --enable-native-access=ALL-UNNAMED")
+            "--enable-native-access=ALL-UNNAMED")
     workingDirectory.set('$PROJECT_DIR$/versions/fabric/' + mcVersion + '/run')
     outputFile.set(rootProject.layout.projectDirectory.file(
             ".idea/runConfigurations/fabric - Client ${mcVersion}.xml"))
