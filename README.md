@@ -20,8 +20,6 @@ build/dist/lattice-0.1.0-universal.jar
 >
 > 这个单 JAR 已在 4 种真实专用服务器组合中启动验证：Fabric 1.21.11、Fabric 26.3、NeoForge 1.21.11、NeoForge 26.3。  
 > 当前只是**最小 PoC**：只包含初始化日志和版本调度，不包含物品、方块、命令、Mixin 或资源。加入真实内容后仍需重新验证。
->
-> 可行性、失败边界和参考项目证据见 [docs/FEASIBILITY.md](docs/FEASIBILITY.md)，逐项启动记录见 [docs/VERIFICATION.md](docs/VERIFICATION.md)。
 
 ## 构建
 
@@ -58,6 +56,27 @@ build/dist/lattice-0.1.0-universal.jar
 set JAVA_HOME=C:\path\to\jdk-25
 gradlew.bat build
 ```
+
+## 在 IDEA 中启动客户端
+
+重新加载 Gradle 项目后，IDEA 右上角运行下拉框会出现四个共享配置：
+
+- `Lattice Client - Fabric 1.21.11`
+- `Lattice Client - Fabric 26.3`
+- `Lattice Client - NeoForge 1.21.11`
+- `Lattice Client - NeoForge 26.3`
+
+也可以从 Gradle 工具窗口运行：
+
+```text
+Lattice > Tasks > run > runClientFabric12111
+Lattice > Tasks > run > runClientNeoForge12111
+Lattice > Tasks > run > runClientFabric263
+Lattice > Tasks > run > runClientNeoForge263
+```
+
+第一次启动会下载客户端资源，之后会复用缓存。  
+注意：`runClient` 加载的是开发环境中的项目源码，不是 `build/dist/lattice-0.1.0-universal.jar`；要验证最终单 JAR，仍需把它放进 `mods/`。
 
 ## 安装
 
@@ -111,7 +130,7 @@ fabric.mod.json / neoforge.mods.toml
 
 ```text
 Lattice/
-├── core/                       # 无 MC / 无 loader 依赖的公共层
+├── common/                     # 无 MC / 无 loader 依赖的公共层
 ├── bootstrap/
 │   ├── fabric/                 # 单 Fabric 入口，按 MC 版本反射调度
 │   └── neoforge/               # 单 NeoForge 入口，按 MC 版本反射调度
@@ -125,8 +144,8 @@ Lattice/
 │       ├── fabric/
 │       └── neoforge/
 ├── crossversion/               # 合并成唯一 JAR 的元数据与任务
-├── scripts/verify-artifacts.py # 校验 build/dist 只有一个 JAR
-└── docs/                       # 可行性、验证记录、Release 说明
+├── .run/                       # IDEA 共享客户端启动配置
+└── scripts/verify-artifacts.py # 校验 build/dist 只有一个 JAR
 ```
 
 ## 校验
@@ -160,13 +179,6 @@ ALL CHECKS PASSED (single universal jar)
 - 加入物品/方块/命令/Mixin 后，需要把版本相关代码放进对应 payload 包，并重新做 4 组启动测试。
 - 不承诺未来 26.4+ 或其他 Minecraft 版本。
 - 不承诺客户端、真实玩家连接、Modrinth/CurseForge 审核通过。
-
-## 文档
-
-- [可行性报告](docs/FEASIBILITY.md)
-- [验证记录](docs/VERIFICATION.md)
-- [Release 说明](docs/RELEASING.md)
-- [CHANGELOG.md](CHANGELOG.md)
 
 ## 许可
 

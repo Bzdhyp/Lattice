@@ -1,6 +1,6 @@
 package dev.lattice.v263.fabric;
 
-import dev.lattice.core.Lattice;
+import dev.lattice.common.Lattice;
 import dev.lattice.v263.MinecraftVersionAdapter;
 
 public final class LatticeFabricPayload {

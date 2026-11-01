@@ -1,6 +1,6 @@
 package dev.lattice.fabric;
 
-import dev.lattice.core.Lattice;
+import dev.lattice.common.Lattice;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 

@@ -29,3 +29,28 @@ tasks.named('build') {
     // The only release artifact is the cross-version/cross-loader jar.
     dependsOn ':crossversion:crossVersionJar'
 }
+
+// Convenience launchers for the IntelliJ Gradle tool window.
+tasks.register('runClientFabric12111') {
+    group = 'run'
+    description = 'Run the Minecraft 1.21.11 Fabric development client'
+    dependsOn ':v1_21_11:fabric:runClient'
+}
+
+tasks.register('runClientNeoForge12111') {
+    group = 'run'
+    description = 'Run the Minecraft 1.21.11 NeoForge development client'
+    dependsOn ':v1_21_11:neoforge:runClient'
+}
+
+tasks.register('runClientFabric263') {
+    group = 'run'
+    description = 'Run the Minecraft 26.3 Fabric development client'
+    dependsOn ':v26_3:fabric:runClient'
+}
+
+tasks.register('runClientNeoForge263') {
+    group = 'run'
+    description = 'Run the Minecraft 26.3 NeoForge development client'
+    dependsOn ':v26_3:neoforge:runClient'
+}

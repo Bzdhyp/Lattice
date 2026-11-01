@@ -23,12 +23,12 @@ java {
 sourceSets {
     main {
         java {
-            srcDir rootProject.file('core/src/main/java')
+            srcDir rootProject.file('common/src/main/java')
             srcDir rootProject.file('bootstrap/fabric/src/main/java')
             srcDir rootProject.file('versions/26.3/common/src/main/java')
         }
         resources {
-            srcDir rootProject.file('core/src/main/resources')
+            srcDir rootProject.file('common/src/main/resources')
             srcDir rootProject.file('versions/26.3/common/src/main/resources')
         }
     }

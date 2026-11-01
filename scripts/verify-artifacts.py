@@ -21,7 +21,7 @@ ARTIFACT = "lattice-0.1.0-universal.jar"
 FABRIC_RANGE = ">=1.21.11 <26.4"
 NEOFORGE_RANGE = "[1.21.11,26.4)"
 EXPECTED_SHARED = {
-    "dev/lattice/core/Lattice.class",
+    "dev/lattice/common/Lattice.class",
     "dev/lattice/fabric/LatticeFabricEntry.class",
     "dev/lattice/neoforge/LatticeNeoForgeEntry.class",
 }

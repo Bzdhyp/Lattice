@@ -1,6 +1,6 @@
 package dev.lattice.v12111.neoforge;
 
-import dev.lattice.core.Lattice;
+import dev.lattice.common.Lattice;
 import dev.lattice.v12111.MinecraftVersionAdapter;
 
 public final class LatticeNeoForgePayload {

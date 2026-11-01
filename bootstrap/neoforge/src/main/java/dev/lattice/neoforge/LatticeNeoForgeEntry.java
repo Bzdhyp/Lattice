@@ -1,6 +1,6 @@
 package dev.lattice.neoforge;
 
-import dev.lattice.core.Lattice;
+import dev.lattice.common.Lattice;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
