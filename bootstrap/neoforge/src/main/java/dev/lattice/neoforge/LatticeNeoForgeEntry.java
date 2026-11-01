@@ -1,9 +1,12 @@
 package dev.lattice.neoforge;
 
 import dev.lattice.common.Lattice;
+import dev.lattice.render.SkijaRenderer;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforgespi.language.IModFileInfo;
 
 /**
@@ -22,6 +25,10 @@ public final class LatticeNeoForgeEntry {
         }
 
         invokePayload(minecraft.versionString());
+
+        if (FMLEnvironment.getDist() == Dist.CLIENT) {
+            SkijaRenderer.initialize();
+        }
     }
 
     private static void invokePayload(String minecraft) {

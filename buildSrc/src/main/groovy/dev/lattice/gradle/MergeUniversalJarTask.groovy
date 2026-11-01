@@ -79,6 +79,9 @@ abstract class MergeUniversalJarTask extends DefaultTask {
                             if (name == 'META-INF/MANIFEST.MF') {
                                 return
                             }
+                            if (name == 'module-info.class' || name.endsWith('/module-info.class')) {
+                                return
+                            }
                             if (name == 'fabric.mod.json' || name == 'META-INF/neoforge.mods.toml') {
                                 return
                             }

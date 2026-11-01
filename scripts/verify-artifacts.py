@@ -24,6 +24,7 @@ EXPECTED_SHARED = {
     "dev/lattice/common/Lattice.class",
     "dev/lattice/fabric/LatticeFabricEntry.class",
     "dev/lattice/neoforge/LatticeNeoForgeEntry.class",
+    "dev/lattice/render/SkijaRenderer.class",
 }
 EXPECTED_PAYLOADS = {
     "dev/lattice/v12111/MinecraftVersionAdapter.class",
@@ -87,6 +88,10 @@ def main() -> int:
         if "[[dependencies.lattice]]" not in toml:
             fail(f"{ARTIFACT}: NeoForge dependency block missing")
 
+        manifest = jar.read("META-INF/MANIFEST.MF").decode("utf-8")
+        if "Multi-Release: true" not in manifest:
+            fail(f"{ARTIFACT}: Skija needs Multi-Release: true")
+
         lang = json.loads(jar.read("assets/lattice/lang/en_us.json"))
         for key in ("lattice.name", "lattice.mc.1_21_11", "lattice.mc.26_3"):
             if key not in lang:
@@ -114,6 +119,16 @@ def main() -> int:
         for name in names:
             if name.startswith("META-INF/") and name.endswith((".SF", ".DSA", ".RSA")):
                 fail(f"{ARTIFACT}: signature file in merged jar: {name}")
+
+        for required in (
+            "io/github/humbleui/skija/Surface.class",
+            "io/github/humbleui/skija/windows/x64/skija.dll",
+            "io/github/humbleui/skija/windows/x64/icudtl.dat",
+            "io/github/humbleui/skija/windows/x64/skija.version",
+            "META-INF/versions/9/io/github/humbleui/skija/impl/Cleanable.class",
+        ):
+            if required not in names:
+                fail(f"{ARTIFACT}: missing Skija payload {required}")
 
         print(
             f"PASS: {ARTIFACT} | entries={len(names)} | classes={len(classes)} "

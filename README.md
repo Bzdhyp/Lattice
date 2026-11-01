@@ -213,6 +213,30 @@ PASS: lattice-1.21.11-26.3-0.1.0-universal.jar | ... | one jar only
 ALL CHECKS PASSED (single universal jar)
 ```
 
+## Skija 2D 渲染
+
+Lattice 已接入 **Skija 0.143.17** 作为 2D 渲染后端：
+
+- 共享代码：`common/src/main/java/dev/lattice/render/SkijaRenderer.java`
+- Fabric 客户端入口：`bootstrap/fabric/.../LatticeFabricClientEntry.java`
+- NeoForge 客户端初始化：在 `LatticeNeoForgeEntry` 中按 `Dist.CLIENT` 调用
+- 原生库：`io.github.humbleui:skija-windows-x64:0.143.17` 已打进最终单 JAR
+- 最终 JAR 使用 `Multi-Release: true`，保证 Java 21/25 下走 Skija 的 `META-INF/versions/9` 实现
+
+当前提供：
+
+```java
+SkijaRenderer.initialize();
+SkijaRenderer.isAvailable();
+SkijaRenderer.renderPreviewPng(width, height); // blur + drop shadow 离线验证
+```
+
+注意：
+
+- 目前只打包 **Windows x64** 原生库；其他系统会捕获加载失败并禁用 Skija，不会让游戏崩溃。
+- 当前是 2D 渲染骨架，已支持 blur / drop shadow；还没有 3D 世界阴影。
+- Skija 使用 Apache-2.0，Skia 使用 BSD-3-Clause；发布前需要补充第三方许可文本。
+
 ## 已验证矩阵
 
 | 场景 | 结果 |

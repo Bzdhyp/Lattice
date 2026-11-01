@@ -37,6 +37,9 @@ sourceSets {
 dependencies {
     minecraft "com.mojang:minecraft:${mcVersion}"
     implementation "net.fabricmc:fabric-loader:${loaderVersion}"
+    implementation 'io.github.humbleui:skija-shared:0.143.17'
+    implementation 'io.github.humbleui:types:0.2.0'
+    runtimeOnly 'io.github.humbleui:skija-windows-x64:0.143.17'
     compileOnly 'org.slf4j:slf4j-api:2.0.9'
 }
 

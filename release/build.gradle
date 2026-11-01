@@ -14,6 +14,18 @@ def fabric263 = project(':versions:fabric:v26_3').tasks.named('jar')
 def neo12111 = project(':versions:neoforge:v1_21_11').tasks.named('jar')
 def neo263 = project(':versions:neoforge:v26_3').tasks.named('jar')
 
+configurations {
+    skijaBundle
+}
+
+dependencies {
+    skijaBundle 'io.github.humbleui:skija-shared:0.143.17'
+    skijaBundle 'io.github.humbleui:types:0.2.0'
+    skijaBundle 'io.github.humbleui:skija-windows-x64:0.143.17'
+}
+
+def skijaJars = configurations.skijaBundle
+
 def expandProps = [
         version         : project.version,
         modId           : rootProject.property('mod_id'),
@@ -43,7 +55,8 @@ tasks.register('singleUniversalJar', MergeUniversalJarTask) {
             fabric12111.flatMap { it.archiveFile },
             fabric263.flatMap { it.archiveFile },
             neo12111.flatMap { it.archiveFile },
-            neo263.flatMap { it.archiveFile }
+            neo263.flatMap { it.archiveFile },
+            skijaJars
     )
     metadataDir.set(layout.buildDirectory.dir('generated/metadata'))
     archiveFile.set(rootProject.layout.buildDirectory.file(
@@ -54,6 +67,7 @@ tasks.register('singleUniversalJar', MergeUniversalJarTask) {
             'Specification-Version' : project.version.toString(),
             'Implementation-Title'  : 'lattice-universal',
             'Implementation-Version': project.version.toString(),
-            'Built-On-Minecraft'    : '1.21.11,26.3'
+            'Built-On-Minecraft'    : '1.21.11,26.3',
+            'Multi-Release'         : 'true'
     ])
 }

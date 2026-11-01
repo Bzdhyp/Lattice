@@ -12,6 +12,9 @@
   "entrypoints": {
     "main": [
       "dev.lattice.fabric.LatticeFabricEntry"
+    ],
+    "client": [
+      "dev.lattice.fabric.LatticeFabricClientEntry"
     ]
   },
   "depends": {
