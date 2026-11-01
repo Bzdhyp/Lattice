@@ -1,0 +1,13 @@
+.gradle/
+build/
+**/build/
+out/
+run/
+runs/
+verify/
+*.iml
+.idea/
+.vscode/
+local.properties
+*.log
+.DS_Store

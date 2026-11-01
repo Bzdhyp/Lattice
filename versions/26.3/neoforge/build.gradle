@@ -1,0 +1,80 @@
+plugins {
+    id 'java'
+    id 'net.neoforged.moddev' version '2.0.148'
+}
+
+def mcVersion = rootProject.property('mc_26_3')
+def javaVersion = rootProject.property('java_26_3')
+def neoforgeVersion = rootProject.property('neoforge_26_3')
+
+group = rootProject.group
+version = rootProject.version
+
+base {
+    archivesName = "lattice-neoforge-${mcVersion}"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(javaVersion.toString())
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir rootProject.file('core/src/main/java')
+            srcDir rootProject.file('bootstrap/neoforge/src/main/java')
+            srcDir rootProject.file('versions/26.3/common/src/main/java')
+        }
+        resources {
+            srcDir rootProject.file('core/src/main/resources')
+            srcDir rootProject.file('versions/26.3/common/src/main/resources')
+        }
+    }
+}
+
+neoForge {
+    version = neoforgeVersion
+    mods {
+        lattice {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+dependencies {
+    compileOnly 'org.slf4j:slf4j-api:2.0.9'
+}
+
+processResources {
+    def expandProps = [
+            version      : project.version,
+            mcVersion    : mcVersion,
+            neoforgeVersion: neoforgeVersion,
+            javaVersion  : javaVersion,
+            modId        : rootProject.property('mod_id'),
+            modName      : rootProject.property('mod_name'),
+            description  : rootProject.property('mod_description'),
+            author       : rootProject.property('mod_author'),
+            license      : rootProject.property('mod_license'),
+            mcRange      : rootProject.property('minecraft_range_26_3')
+    ]
+    inputs.properties(expandProps)
+    filesMatching('META-INF/neoforge.mods.toml') {
+        expand(expandProps)
+    }
+}
+
+tasks.withType(Jar).configureEach {
+    manifest {
+        attributes(
+                'Specification-Title': rootProject.property('mod_name'),
+                'Specification-Vendor': rootProject.property('mod_author'),
+                'Specification-Version': project.version,
+                'Implementation-Title': 'lattice-neoforge',
+                'Implementation-Version': project.version,
+                'Built-On-Minecraft': mcVersion
+        )
+    }
+}

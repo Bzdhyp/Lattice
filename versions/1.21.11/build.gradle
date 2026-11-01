@@ -1,0 +1,35 @@
+plugins {
+    id 'base'
+}
+
+def mcVersion = rootProject.property('mc_1_21_11')
+
+evaluationDependsOn(':v1_21_11:fabric')
+evaluationDependsOn(':v1_21_11:neoforge')
+
+def fabricJarTask = project(':v1_21_11:fabric').tasks.named('remapJar')
+def neoForgeJarTask = project(':v1_21_11:neoforge').tasks.named('jar', Jar)
+
+tasks.register('universalJar', Jar) {
+    description = 'Merges the Fabric and NeoForge 1.21.11 jars into one universal jar.'
+    group = 'build'
+    dependsOn fabricJarTask, neoForgeJarTask
+    archiveFileName = "lattice-${mcVersion}-${project.version}-universal.jar"
+    destinationDirectory = rootProject.layout.buildDirectory.dir('dist')
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
+    from { zipTree(fabricJarTask.get().archiveFile.get().asFile) }
+    from { zipTree(neoForgeJarTask.get().archiveFile.get().asFile) }
+
+    manifest {
+        attributes(
+                'Specification-Title': rootProject.property('mod_name'),
+                'Specification-Vendor': rootProject.property('mod_author'),
+                'Specification-Version': project.version,
+                'Implementation-Title': 'lattice-universal',
+                'Implementation-Version': project.version,
+                'Built-On-Minecraft': mcVersion
+        )
+    }
+}

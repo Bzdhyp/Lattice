@@ -1,0 +1,24 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "${license}"
+
+[[mods]]
+modId = "${modId}"
+version = "${version}"
+displayName = "${modName}"
+authors = "${author}"
+description = '''${description}'''
+
+[[dependencies.${modId}]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neoforgeRange}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${modId}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${neoforgeMcRange}"
+ordering = "NONE"
+side = "BOTH"

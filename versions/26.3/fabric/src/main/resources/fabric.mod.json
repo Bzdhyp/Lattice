@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "${modId}",
+  "version": "${version}",
+  "name": "${modName}",
+  "description": "${description}",
+  "authors": [
+    "${author}"
+  ],
+  "license": "${license}",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "dev.lattice.fabric.LatticeFabricEntry"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=${loaderVersion}",
+    "minecraft": "${mcRange}",
+    "java": ">=${javaVersion}"
+  }
+}

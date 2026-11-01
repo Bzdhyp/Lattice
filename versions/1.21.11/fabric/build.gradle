@@ -1,0 +1,74 @@
+plugins {
+    id 'java'
+    id 'net.fabricmc.fabric-loom-remap' version '1.18.1'
+}
+
+def mcVersion = rootProject.property('mc_1_21_11')
+def javaVersion = rootProject.property('java_1_21_11')
+def loaderVersion = rootProject.property('fabric_loader_1_21_11')
+
+group = rootProject.group
+version = rootProject.version
+
+base {
+    archivesName = "lattice-fabric-${mcVersion}"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(javaVersion.toString())
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir rootProject.file('core/src/main/java')
+            srcDir rootProject.file('bootstrap/fabric/src/main/java')
+            srcDir rootProject.file('versions/1.21.11/common/src/main/java')
+        }
+        resources {
+            srcDir rootProject.file('core/src/main/resources')
+            srcDir rootProject.file('versions/1.21.11/common/src/main/resources')
+        }
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${mcVersion}"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${loaderVersion}"
+    compileOnly 'org.slf4j:slf4j-api:2.0.9'
+}
+
+processResources {
+    def expandProps = [
+            version      : project.version,
+            mcVersion    : mcVersion,
+            loaderVersion: loaderVersion,
+            javaVersion  : javaVersion,
+            modId        : rootProject.property('mod_id'),
+            modName      : rootProject.property('mod_name'),
+            description  : rootProject.property('mod_description'),
+            author       : rootProject.property('mod_author'),
+            license      : rootProject.property('mod_license'),
+            mcRange      : rootProject.property('fabric_mc_range_1_21_11')
+    ]
+    inputs.properties(expandProps)
+    filesMatching('fabric.mod.json') {
+        expand(expandProps)
+    }
+}
+
+tasks.withType(Jar).configureEach {
+    manifest {
+        attributes(
+                'Specification-Title': rootProject.property('mod_name'),
+                'Specification-Vendor': rootProject.property('mod_author'),
+                'Specification-Version': project.version,
+                'Implementation-Title': 'lattice-fabric',
+                'Implementation-Version': project.version,
+                'Built-On-Minecraft': mcVersion
+        )
+    }
+}
