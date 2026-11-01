@@ -5,7 +5,7 @@ Lattice 是一个 Minecraft **单 JAR、双加载器、双版本** 工程 PoC。
 最终只发布一个文件：
 
 ```text
-build/dist/lattice-0.1.0-universal.jar
+build/dist/lattice-1.21.11-26.3-0.1.0-universal.jar
 ```
 
 这一个 JAR 同时覆盖：
@@ -19,7 +19,7 @@ build/dist/lattice-0.1.0-universal.jar
 > **真实性说明**
 >
 > 这个单 JAR 已在 4 种真实专用服务器组合中启动验证：Fabric 1.21.11、Fabric 26.3、NeoForge 1.21.11、NeoForge 26.3。  
-> 当前只是**最小 PoC**：只包含初始化日志和版本调度，不包含物品、方块、命令、Mixin 或资源。加入真实内容后仍需重新验证。
+> 当前只是**最小 PoC**：只包含初始化日志、版本调度、资源目录骨架和 `lang` 示例，不包含真实物品、方块、命令或 Mixin。加入真实内容后仍需重新验证。
 
 ## 构建
 
@@ -38,7 +38,7 @@ Linux/macOS：
 构建完成后：
 
 ```text
-build/dist/lattice-0.1.0-universal.jar
+build/dist/lattice-1.21.11-26.3-0.1.0-universal.jar
 ```
 
 `gradlew build` 只会把**这一个 JAR** 放进 `build/dist/`。  
@@ -76,11 +76,11 @@ Lattice > Tasks > run > runClientNeoForge263
 ```
 
 第一次启动会下载客户端资源，之后会复用缓存。  
-注意：`runClient` 加载的是开发环境中的项目源码，不是 `build/dist/lattice-0.1.0-universal.jar`；要验证最终单 JAR，仍需把它放进 `mods/`。
+注意：`runClient` 加载的是开发环境中的项目源码，不是 `build/dist/lattice-1.21.11-26.3-0.1.0-universal.jar`；要验证最终单 JAR，仍需把它放进 `mods/`。
 
 ## 安装
 
-把 `build/dist/lattice-0.1.0-universal.jar` 复制到：
+把 `build/dist/lattice-1.21.11-26.3-0.1.0-universal.jar` 复制到：
 
 ```text
 .minecraft/mods/
@@ -130,23 +130,64 @@ fabric.mod.json / neoforge.mods.toml
 
 ```text
 Lattice/
-├── common/                     # 无 MC / 无 loader 依赖的公共层
+├── common/
+│   ├── src/main/java/           # 无 MC / 无 loader 依赖的公共代码
+│   └── src/main/resources/
+│       └── assets/lattice/      # 共享大资源：font / shaders / textures / icon.png
 ├── bootstrap/
-│   ├── fabric/                 # 单 Fabric 入口，按 MC 版本反射调度
-│   └── neoforge/               # 单 NeoForge 入口，按 MC 版本反射调度
+│   ├── fabric/                  # 单 Fabric 入口，按 MC 版本反射调度
+│   └── neoforge/                # 单 NeoForge 入口，按 MC 版本反射调度
 ├── versions/
 │   ├── 1.21.11/
-│   │   ├── common/             # 1.21.11 版本适配层
-│   │   ├── fabric/             # Fabric payload + fabric.mod.json
-│   │   └── neoforge/           # NeoForge payload + neoforge.mods.toml
+│   │   ├── common/              # 1.21.11 代码 + 版本专属 lang
+│   │   ├── fabric/              # 只放 fabric.mod.json / Mixin 等元数据
+│   │   └── neoforge/            # 只放 neoforge.mods.toml / Mixin 等元数据
 │   └── 26.3/
 │       ├── common/
 │       ├── fabric/
 │       └── neoforge/
-├── crossversion/               # 合并成唯一 JAR 的元数据与任务
-├── .run/                       # IDEA 共享客户端启动配置
-└── scripts/verify-artifacts.py # 校验 build/dist 只有一个 JAR
+├── crossversion/                # 合并成唯一 JAR，并合并版本 lang
+├── .run/                        # IDEA 共享客户端启动配置
+└── scripts/verify-artifacts.py  # 校验 build/dist 只有一个 JAR
 ```
+
+`versions/1.21.11` 和 `versions/26.3` 是两个隔离的版本子工程，各自有独立 toolchain、依赖图和源码目录；根 wrapper 只负责统一编排单 JAR 构建。
+
+### 资源放哪里
+
+| 资源 | 路径 |
+|---|---|
+| 字体、shader、贴图、音效、图标等共享资源 | `common/src/main/resources/assets/lattice/` |
+| TTF 字体（原版 provider） | `common/src/main/resources/assets/lattice/font/your_font.ttf` + 同名 `.json` |
+| 版本专属 `lang` | `versions/<版本>/common/src/main/resources/assets/lattice/lang/` |
+| 版本专属贴图 / data | `versions/<版本>/common/src/main/resources/assets/lattice/` 或 `.../data/lattice/` |
+| 加载器元数据、Mixin 配置 | `versions/<版本>/fabric/src/main/resources/`、`.../neoforge/src/main/resources/` |
+
+原版 TTF provider 示例：
+
+```text
+common/src/main/resources/assets/lattice/font/your_font.ttf
+common/src/main/resources/assets/lattice/font/your_font.json
+```
+
+```json
+{
+  "providers": [
+    {
+      "type": "ttf",
+      "file": "lattice:font/your_font.ttf",
+      "size": 11.0,
+      "oversample": 2.0,
+      "shift": [0.0, 0.0],
+      "skip": ""
+    }
+  ]
+}
+```
+
+如果你使用 Epsilon / Muonium 那种自绘 TTF 渲染器，字体可以放在 `common/src/main/resources/lattice/fonts/`，由你的字体加载器通过 classpath 读取；这不是原版字体 provider 路径。
+
+版本 `lang` 会在合并单 JAR 时按 JSON 合并：26.3 对同名 key 优先。需要两个版本同时存在的文案请使用带版本后缀的 key，避免被覆盖。
 
 ## 校验
 
@@ -157,7 +198,7 @@ python scripts/verify-artifacts.py
 期望输出：
 
 ```text
-PASS: lattice-0.1.0-universal.jar | ... | one jar only
+PASS: lattice-1.21.11-26.3-0.1.0-universal.jar | ... | one jar only
 ALL CHECKS PASSED (single universal jar)
 ```
 
@@ -170,7 +211,7 @@ ALL CHECKS PASSED (single universal jar)
 | 单 JAR × NeoForge 1.21.11 | ✅ `Done`，初始化 `mc-1.21.11` |
 | 单 JAR × NeoForge 26.3 | ✅ `Done`，初始化 `mc-26.3` |
 
-> 验证的是 **dedicated server**，不是客户端。客户端启动仍待验证。
+> 上表四组服务器矩阵来自资源分层重构前的同一功能版本。本次重构后已重新通过 `gradlew build`、静态校验，并重新启动 Fabric 1.21.11 客户端；NeoForge/26.3 服务器未在本次重构后重跑。
 
 ## 限制
 

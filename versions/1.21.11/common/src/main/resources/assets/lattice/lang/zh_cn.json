@@ -1,0 +1,5 @@
+{
+  "lattice.name": "Lattice",
+  "lattice.description": "一个多加载器、多版本的 Minecraft 模组。",
+  "lattice.mc.1_21_11": "1.21.11"
+}

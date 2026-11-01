@@ -16,7 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DIST = ROOT / "build" / "dist"
-ARTIFACT = "lattice-0.1.0-universal.jar"
+ARTIFACT = "lattice-1.21.11-26.3-0.1.0-universal.jar"
 
 FABRIC_RANGE = ">=1.21.11 <26.4"
 NEOFORGE_RANGE = "[1.21.11,26.4)"
@@ -86,6 +86,11 @@ def main() -> int:
             fail(f"{ARTIFACT}: NeoForge Minecraft range missing")
         if "[[dependencies.lattice]]" not in toml:
             fail(f"{ARTIFACT}: NeoForge dependency block missing")
+
+        lang = json.loads(jar.read("assets/lattice/lang/en_us.json"))
+        for key in ("lattice.name", "lattice.mc.1_21_11", "lattice.mc.26_3"):
+            if key not in lang:
+                fail(f"{ARTIFACT}: merged lang missing {key}")
 
         classes = {
             name: class_major(jar.read(name))
