@@ -257,17 +257,17 @@ API 分层：
 - 当前是 2D 渲染层，已支持 blur / drop shadow；还没有 3D 世界阴影。
 - Skija 使用 Apache-2.0，Skia 使用 BSD-3-Clause；发布前需要补充第三方许可文本。
 
-## 游戏内渲染测试
+## 游戏内 ClickGUI 测试
 
-客户端进入世界后会自动打开一次测试 Screen，显示 Skija 渲染的卡片：
+客户端进入世界后会自动打开一次 Skija ClickGUI：
 
-- 直角/圆角矩形
-- 圆角描边
-- drop shadow
-- blur 光晕
-- 480×240 的 Skija 图上传成 Minecraft 动态纹理
+- 左侧 `Render / Effects / Settings` 分类可点击
+- 右侧 `Drop shadow / Backdrop blur / Rounded outline` 开关可点击
+- hover 会改变按钮/开关颜色
+- 右上角 `x` 关闭
+- 全部面板、圆角、描边、阴影和 blur 由 Skija 绘制，再上传为 Minecraft 动态纹理
 
-关闭方式：按 `Esc`。  
+关闭方式：按 `Esc` 或点击 `x`。  
 禁用自动测试屏：JVM 参数
 
 ```text

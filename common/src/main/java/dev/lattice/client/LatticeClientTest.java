@@ -35,8 +35,8 @@ public final class LatticeClientTest {
         opened = true;
         try {
             String className = minecraftVersion.startsWith("26.3")
-                    ? "dev.lattice.v263.client.LatticeRenderTestScreen"
-                    : "dev.lattice.v12111.client.LatticeRenderTestScreen";
+                    ? "dev.lattice.v263.client.LatticeClickGuiScreen"
+                    : "dev.lattice.v12111.client.LatticeClickGuiScreen";
             Screen screen = (Screen) Class.forName(className)
                     .getDeclaredConstructor()
                     .newInstance();
