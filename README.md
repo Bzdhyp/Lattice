@@ -120,3 +120,5 @@ Lattice/
 ## 许可
 
 MIT，见 [LICENSE](LICENSE)。
+
+发布与标签流程见 [docs/RELEASING.md](docs/RELEASING.md)，版本变更见 [CHANGELOG.md](CHANGELOG.md)。
