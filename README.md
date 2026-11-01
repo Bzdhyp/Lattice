@@ -101,9 +101,9 @@ server/mods/
 
 然后使用对应环境启动：
 
-- Minecraft 1.21.11 + Fabric
+- Minecraft 1.21.11 + Fabric + Fabric API
 - Minecraft 1.21.11 + NeoForge
-- Minecraft 26.3 + Fabric
+- Minecraft 26.3 + Fabric + Fabric API
 - Minecraft 26.3 + NeoForge
 
 日志中应出现：
@@ -256,6 +256,32 @@ API 分层：
 - 目前只打包 **Windows x64** 原生库；其他系统会捕获加载失败并禁用 Skija，不会让游戏崩溃。
 - 当前是 2D 渲染层，已支持 blur / drop shadow；还没有 3D 世界阴影。
 - Skija 使用 Apache-2.0，Skia 使用 BSD-3-Clause；发布前需要补充第三方许可文本。
+
+## 游戏内渲染测试
+
+客户端进入世界后会自动打开一次测试 Screen，显示 Skija 渲染的卡片：
+
+- 直角/圆角矩形
+- 圆角描边
+- drop shadow
+- blur 光晕
+- 480×240 的 Skija 图上传成 Minecraft 动态纹理
+
+关闭方式：按 `Esc`。  
+禁用自动测试屏：JVM 参数
+
+```text
+-Dlattice.renderTest=false
+```
+
+打开测试屏的客户端入口：
+
+```text
+Fabric: ClientTickEvents.END_CLIENT_TICK
+NeoForge: ClientTickEvent.Post
+```
+
+> Fabric 侧现在使用 Fabric API 的客户端 tick 事件；安装 Lattice 的 Fabric 版本时，必须同时安装对应版本的 Fabric API。
 
 ## 测试
 

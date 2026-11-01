@@ -6,6 +6,7 @@ plugins {
 def mcVersion = rootProject.property('mc_1_21_11')
 def javaVersion = rootProject.property('java_1_21_11')
 def loaderVersion = rootProject.property('fabric_loader_1_21_11')
+def fabricApiVersion = rootProject.property('fabric_api_1_21_11')
 
 group = rootProject.group
 version = rootProject.version
@@ -38,6 +39,7 @@ dependencies {
     minecraft "com.mojang:minecraft:${mcVersion}"
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${loaderVersion}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabricApiVersion}"
     implementation 'io.github.humbleui:skija-shared:0.143.17'
     implementation 'io.github.humbleui:types:0.2.0'
     runtimeOnly 'io.github.humbleui:skija-windows-x64:0.143.17'

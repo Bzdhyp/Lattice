@@ -77,6 +77,12 @@ def main() -> int:
             fail(f"{ARTIFACT}: fabric.mod.json id is not lattice")
         if fabric["entrypoints"]["main"] != ["dev.lattice.fabric.LatticeFabricEntry"]:
             fail(f"{ARTIFACT}: unexpected Fabric entrypoint")
+        if fabric["entrypoints"].get("client") != [
+            "dev.lattice.fabric.LatticeFabricClientEntry"
+        ]:
+            fail(f"{ARTIFACT}: Fabric client entrypoint missing")
+        if fabric["depends"].get("fabric-api") != "*":
+            fail(f"{ARTIFACT}: Fabric API dependency missing")
         if fabric["depends"]["minecraft"] != FABRIC_RANGE:
             fail(f"{ARTIFACT}: Fabric range is {fabric['depends']['minecraft']!r}")
         if "[" in FABRIC_RANGE or "," in FABRIC_RANGE:

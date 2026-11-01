@@ -12,6 +12,9 @@ sourceSets {
     main {
         java {
             srcDir rootProject.file('common/src/main/java')
+            // In-game client bridge classes depend on Minecraft; the render test
+            // only compiles the offscreen Skija API.
+            exclude 'dev/lattice/client/**'
         }
     }
 }

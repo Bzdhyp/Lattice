@@ -1,5 +1,6 @@
 package dev.lattice.neoforge;
 
+import dev.lattice.client.LatticeClientTest;
 import dev.lattice.common.Lattice;
 import dev.lattice.render.SkijaRenderer;
 import net.neoforged.api.distmarker.Dist;
@@ -7,6 +8,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforgespi.language.IModFileInfo;
 
 /**
@@ -28,6 +31,9 @@ public final class LatticeNeoForgeEntry {
 
         if (FMLEnvironment.getDist() == Dist.CLIENT) {
             SkijaRenderer.initialize();
+            String minecraftVersion = minecraft.versionString();
+            NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class,
+                    event -> LatticeClientTest.openOnce(minecraftVersion));
         }
     }
 

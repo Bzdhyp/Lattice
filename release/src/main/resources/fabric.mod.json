@@ -12,10 +12,14 @@
   "entrypoints": {
     "main": [
       "dev.lattice.fabric.LatticeFabricEntry"
+    ],
+    "client": [
+      "dev.lattice.fabric.LatticeFabricClientEntry"
     ]
   },
   "depends": {
     "fabricloader": ">=${fabricLoader}",
+    "fabric-api": "*",
     "minecraft": "${fabricMcRange}",
     "java": ">=21"
   }
