@@ -228,13 +228,32 @@ Lattice 已接入 **Skija 0.143.17** 作为 2D 渲染后端：
 ```java
 SkijaRenderer.initialize();
 SkijaRenderer.isAvailable();
-SkijaRenderer.renderPreviewPng(width, height); // blur + drop shadow 离线验证
+
+try (SkijaFrame frame = SkijaRenderer.beginFrame(480, 240)) {
+    SkijaShapes.rect(0, 0, 480, 240, 0xFF101018);
+    SkijaShapes.roundedRect(40, 40, 400, 160, 24, 0xFF202838);
+    SkijaShapes.roundedOutline(40, 40, 400, 160, 24, 2, 0xFF70C0FF);
+    SkijaEffects.dropShadow(40, 40, 400, 160, 24, 0, 8, 18, 0xAA000000);
+    SkijaEffects.backdropBlurRounded(40, 40, 400, 160, 24, 12, 0.8f);
+    byte[] png = frame.encodePng();
+}
 ```
+
+API 分层：
+
+| 类 | 用途 |
+|---|---|
+| `SkijaRenderer` | 初始化、`beginFrame()`、预览图 |
+| `SkijaFrame` | 一帧离屏 Surface/Canvas，`encodePng()` |
+| `SkijaGfx` | Paint 缓存、状态栈、translate/scale/rotate |
+| `SkijaShapes` | rect、圆角矩形、描边、圆、线性渐变 |
+| `SkijaEffects` | drop shadow、shape blur、backdrop blur |
 
 注意：
 
+- 当前 API 是 **离屏 Canvas API**；Minecraft GUI framebuffer 的 Host 仍需按 1.21.11 / 26.3 各写一份（参考 MuoniumPlayer 的 `SkijaHost` 分层）。
 - 目前只打包 **Windows x64** 原生库；其他系统会捕获加载失败并禁用 Skija，不会让游戏崩溃。
-- 当前是 2D 渲染骨架，已支持 blur / drop shadow；还没有 3D 世界阴影。
+- 当前是 2D 渲染层，已支持 blur / drop shadow；还没有 3D 世界阴影。
 - Skija 使用 Apache-2.0，Skia 使用 BSD-3-Clause；发布前需要补充第三方许可文本。
 
 ## 已验证矩阵

@@ -25,6 +25,10 @@ EXPECTED_SHARED = {
     "dev/lattice/fabric/LatticeFabricEntry.class",
     "dev/lattice/neoforge/LatticeNeoForgeEntry.class",
     "dev/lattice/render/SkijaRenderer.class",
+    "dev/lattice/render/SkijaFrame.class",
+    "dev/lattice/render/SkijaGfx.class",
+    "dev/lattice/render/SkijaShapes.class",
+    "dev/lattice/render/SkijaEffects.class",
 }
 EXPECTED_PAYLOADS = {
     "dev/lattice/v12111/MinecraftVersionAdapter.class",
