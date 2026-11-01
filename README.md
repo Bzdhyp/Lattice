@@ -41,25 +41,38 @@ versions/26.3/neoforge/build/libs/lattice-neoforge-26.3-0.1.0.jar
 
 ## 构建环境
 
-- 运行 Gradle 的 JVM：**JDK 25**（本机其他 JDK 不影响 Gradle toolchain）
+- Gradle Wrapper：9.7.1
+- 构建 Gradle daemon：**JDK 25**（仓库通过 `gradle/gradle-daemon-jvm.properties` 自动选择）
 - 编译 1.21.11：JDK **21**
 - 编译 26.3：JDK **25**
 - 不需要系统安装 Gradle；仓库自带 wrapper。
 
-Windows 示例：
+Windows 示例，直接用当前 Java 21 环境执行即可：
 
 ```bat
-set JAVA_HOME=C:\path\to\jdk-25
 gradlew.bat build
 ```
 
 Linux/macOS 示例：
 
 ```bash
-JAVA_HOME=/path/to/jdk-25 ./gradlew build
+./gradlew build
 ```
 
-Gradle 会自动探测本机 JDK；CI 通过 `JAVA_HOME_21_X64` / `JAVA_HOME_25_X64` 提供两个 toolchain。缺少 JDK 时 foojay resolver 可自动下载。
+Gradle Wrapper 会自动选择 JDK 25 运行构建 daemon，并自动探测本机 JDK 21/25；缺少对应 toolchain 时 foojay resolver 可自动下载。
+
+如果仍然出现：
+
+```text
+Dependency requires at least JVM runtime version 25. This build uses a Java 21 JVM.
+```
+
+说明当前使用的不是仓库内更新后的 wrapper 配置，或下载的源码缺少 `gradle/gradle-daemon-jvm.properties`。先执行 `gradlew --stop` 再重试；仍失败时临时指定 JDK 25：
+
+```bat
+set JAVA_HOME=C:\path\to\jdk-25
+gradlew.bat build
+```
 
 ## 单独构建
 
